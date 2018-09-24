@@ -1,6 +1,17 @@
+/**
 
+   @author: Nombre de un autor.
+   @id:     Cédula del autor.
+
+   @author: Nombre del otro autor.
+   @id:     Cédula del autor.
+
+*/
+
+// Deja esta línea tal como está
 struct Enviroment;
 
+// No modifiques este tipo
 struct Exp
 {
   enum class ExpType
@@ -36,8 +47,10 @@ struct Exp
   virtual string to_string() const = 0;
 };
 
+// No modifiques el siguiente alias
 using VarList = SLList<tuple<string, Exp *>>;
 
+// No modifiques el siguiente tipo
 struct Enviroment : public VarList
 {
   Enviroment()
@@ -46,7 +59,7 @@ struct Enviroment : public VarList
     // Empty
   }
   
-  Enviroment(const Enviroment & env)
+  Enviroment(Enviroment & env)
   {
     for (auto t : env)
       this->append(make_tuple(std::get<0>(t), std::get<1>(t)->clone()));
@@ -62,6 +75,11 @@ struct Enviroment : public VarList
   }
 };
 
+/* Busca en el conjunto de variables, la expresión asociada al nombre pasado
+   como parámetro. Si no existe la variable, retorna nullptr.
+  
+   Es útil al evaluar el tipo Var. No la modifiques.
+*/
 Exp * envlookup(Enviroment & env, const string & var_name)
 {
   auto a = env.search_ptr([&var_name] (auto t)
@@ -71,10 +89,11 @@ Exp * envlookup(Enviroment & env, const string & var_name)
   
   if (a == nullptr)
     return nullptr;
-
+  
   return get<1>(*a)->clone();
 };
 
+// Se te provee solucionada
 struct Void : public Exp
 {
   Void()
@@ -100,7 +119,7 @@ struct Void : public Exp
   
   Exp * eval(Enviroment &) override
   {
-    return clone();
+    return new Void();
   }
   
   string to_string() const override
@@ -132,17 +151,21 @@ struct Int : public Exp
   
   void destroy() override
   {
-    // empty
+    // Programa aquí la liberación de memoria de todos los hijos de this
   }
 
   Exp * clone() override
   {
-    return new Int(value);
+    /* Programa aquí la creación de un nuevo objeto idéntico a this y retorna
+       un valor adecuado.
+    */
+    return nullptr;
   }
   
-  Exp * eval(Enviroment &) override
+  Exp * eval(Enviroment & env) override
   {
-    return clone();
+    // Programa aquí cómo se evalúa esta expresión y retorna un valor adecuado.
+    return nullptr;
   }
 
   string to_string() const override
@@ -176,23 +199,21 @@ struct IsVoid : public Exp
   
   void destroy() override
   {
-    delete e;
+    // Programa aquí la liberación de memoria de todos los hijos de this
   }
-  
+
   Exp * clone() override
   {
-    return new IsVoid(e->clone());
+    /* Programa aquí la creación de un nuevo objeto idéntico a this y retorna
+       un valor adecuado.
+    */
+    return nullptr;
   }
   
   Exp * eval(Enviroment & env) override
   {
-    Exp * ee = e->eval(env);
-
-    Exp * ret_val = ee->get_type() == ExpType::VOID ? new Int(1) : new Int(0);
-
-    delete ee;
-    
-    return ret_val;
+    // Programa aquí cómo se evalúa esta expresión y retorna un valor adecuado.
+    return nullptr;
   }
   
   string to_string() const override
@@ -227,21 +248,21 @@ struct Pair : public Exp
 
   void destroy() override
   {
-    delete e1;
-    delete e2;
+    // Programa aquí la liberación de memoria de todos los hijos de this
   }
 
   Exp * clone() override
   {
-    return new Pair(e1->clone(), e2->clone());
+    /* Programa aquí la creación de un nuevo objeto idéntico a this y retorna
+       un valor adecuado.
+    */
+    return nullptr;
   }
   
   Exp * eval(Enviroment & env) override
   {
-    Exp * ee1 = e1->eval(env);
-    Exp * ee2 = e2->eval(env);
-
-    return new Pair(ee1, ee2);
+    // Programa aquí cómo se evalúa esta expresión y retorna un valor adecuado.
+    return nullptr;
   }
 
   string to_string() const override
@@ -272,32 +293,24 @@ struct Fst : public Exp
   {
     destroy();
   }
-  
+
   void destroy() override
   {
-    delete e;
+    // Programa aquí la liberación de memoria de todos los hijos de this
   }
-  
+
   Exp * clone() override
   {
-    return new Fst(e->clone());
+    /* Programa aquí la creación de un nuevo objeto idéntico a this y retorna
+       un valor adecuado.
+    */
+    return nullptr;
   }
   
   Exp * eval(Enviroment & env) override
   {
-    Exp * p = e->eval(env);
-
-    if (p->get_type() != ExpType::PAIR)
-      {
-	delete p;
-	throw domain_error("fst applied to non-pair");
-      }
-    
-    Exp * ret_val = static_cast<Pair *>(p)->e1->clone();
-
-    delete p;
-    
-    return ret_val;
+    // Programa aquí cómo se evalúa esta expresión y retorna un valor adecuado.
+    return nullptr;
   }
 
   string to_string() const override
@@ -328,32 +341,24 @@ struct Snd : public Exp
   {
     destroy();
   }
-
+  
   void destroy() override
   {
-    delete e;
+    // Programa aquí la liberación de memoria de todos los hijos de this
   }
-  
+
   Exp * clone() override
   {
-    return new Snd(e->clone());
+    /* Programa aquí la creación de un nuevo objeto idéntico a this y retorna
+       un valor adecuado.
+    */
+    return nullptr;
   }
   
   Exp * eval(Enviroment & env) override
   {
-    Exp * p = e->eval(env);
-
-    if (p->get_type() != ExpType::PAIR)
-      {
-	delete p;
-	throw domain_error("snd applied to non-pair");
-      }
-    
-    Exp * ret_val = static_cast<Pair *>(p)->e2->clone();
-
-    delete p;
-    
-    return ret_val;
+    // Programa aquí cómo se evalúa esta expresión y retorna un valor adecuado.
+    return nullptr;
   }
 
   string to_string() const override
@@ -387,27 +392,21 @@ struct Neg : public Exp
   
   void destroy() override
   {
-    delete e;
+    // Programa aquí la liberación de memoria de todos los hijos de this
   }
 
   Exp * clone() override
   {
-    return new Neg(e->clone());
+    /* Programa aquí la creación de un nuevo objeto idéntico a this y retorna
+       un valor adecuado.
+    */
+    return nullptr;
   }
   
   Exp * eval(Enviroment & env) override
   {
-    Exp * ee = e->eval(env);
-
-    if (ee->get_type() != ExpType::INT)
-      {
-	delete ee;
-	throw domain_error("neg applied to non-int");
-      }
-    
-    int value = static_cast<Int *>(ee)->value;
-    delete ee;
-    return new Int(-value);
+    // Programa aquí cómo se evalúa esta expresión y retorna un valor adecuado.
+    return nullptr;
   }
 
   string to_string() const override
@@ -440,23 +439,23 @@ struct Def : public Exp
     destroy();
   }
 
+  void destroy() override
+  {
+    // Programa aquí la liberación de memoria de todos los hijos de this
+  }
+
   Exp * clone() override
   {
-    return new Def(var_name, e->clone());
+    /* Programa aquí la creación de un nuevo objeto idéntico a this y retorna
+       un valor adecuado.
+    */
+    return nullptr;
   }
   
   Exp * eval(Enviroment & env) override
   {
-    Exp * ee = e->eval(env);
-    
-    env.insert(make_tuple(var_name, ee));
-    
-    return new Void();
-  }
-  
-  void destroy() override
-  {
-    // empty
+    // Programa aquí cómo se evalúa esta expresión y retorna un valor adecuado.
+    return nullptr;
   }
 
   string to_string() const override
@@ -488,24 +487,23 @@ struct Var : public Exp
     destroy();
   }
 
+  void destroy() override
+  {
+    // Programa aquí la liberación de memoria de todos los hijos de this
+  }
+
   Exp * clone() override
   {
-    return new Var(var_name);
+    /* Programa aquí la creación de un nuevo objeto idéntico a this y retorna
+       un valor adecuado.
+    */
+    return nullptr;
   }
   
   Exp * eval(Enviroment & env) override
   {
-    Exp * e = envlookup(env, var_name);
-
-    if (e == nullptr)
-      throw domain_error("var does not exist");
-    
-    return e;
-  }
-  
-  void destroy() override
-  {
-    // empty
+    // Programa aquí cómo se evalúa esta expresión y retorna un valor adecuado.
+    return nullptr;
   }
 
   string to_string() const override
@@ -540,33 +538,21 @@ struct Add : public Exp
   
   void destroy() override
   {
-    delete e1;
-    delete e2;
+    // Programa aquí la liberación de memoria de todos los hijos de this
   }
 
   Exp * clone() override
   {
-    return new Add(e1->clone(), e2->clone());
+    /* Programa aquí la creación de un nuevo objeto idéntico a this y retorna
+       un valor adecuado.
+    */
+    return nullptr;
   }
   
   Exp * eval(Enviroment & env) override
   {
-    Exp * ee1 = e1->eval(env);
-    Exp * ee2 = e2->eval(env);
-
-    if (ee1->get_type() != ExpType::INT or ee2->get_type() != ExpType::INT)
-      {
-	delete ee1;
-	delete ee2;
-	throw domain_error("add applied to non-int");
-      }
-
-    int val = static_cast<Int *>(ee1)->value + static_cast<Int *>(ee2)->value;
-
-    delete ee1;
-    delete ee2;
-
-    return new Int(val);
+    // Programa aquí cómo se evalúa esta expresión y retorna un valor adecuado.
+    return nullptr;
   }
 
   string to_string() const override
@@ -601,33 +587,21 @@ struct Mul : public Exp
   
   void destroy() override
   {
-    delete e1;
-    delete e2;
+    // Programa aquí la liberación de memoria de todos los hijos de this
   }
 
   Exp * clone() override
   {
-    return new Mul(e1->clone(), e2->clone());
+    /* Programa aquí la creación de un nuevo objeto idéntico a this y retorna
+       un valor adecuado.
+    */
+    return nullptr;
   }
-
+  
   Exp * eval(Enviroment & env) override
   {
-    Exp * ee1 = e1->eval(env);
-    Exp * ee2 = e2->eval(env);
-    
-    if (ee1->get_type() != ExpType::INT or ee2->get_type() != ExpType::INT)
-      {
-	delete ee1;
-	delete ee2;
-	throw domain_error("mul applied to non-int");
-      }
-    
-    int val = static_cast<Int *>(ee1)->value * static_cast<Int *>(ee2)->value;
-    
-    delete ee1;
-    delete ee2;
-    
-    return new Int(val);
+    // Programa aquí cómo se evalúa esta expresión y retorna un valor adecuado.
+    return nullptr;
   }
 
   string to_string() const override
@@ -662,34 +636,21 @@ struct DivMod : public Exp
 
   void destroy() override
   {
-    delete e1;
-    delete e2;
+    // Programa aquí la liberación de memoria de todos los hijos de this
   }
 
   Exp * clone() override
   {
-    return new DivMod(e1->clone(), e2->clone());
+    /* Programa aquí la creación de un nuevo objeto idéntico a this y retorna
+       un valor adecuado.
+    */
+    return nullptr;
   }
-
+  
   Exp * eval(Enviroment & env) override
   {
-    Int * ee1 = static_cast<Int *>(e1->eval(env));
-    Int * ee2 = static_cast<Int *>(e2->eval(env));
-
-    if (ee1->get_type() != ExpType::INT or ee2->get_type() != ExpType::INT)
-      {
-	delete ee1;
-	delete ee2;
-	throw domain_error("divmod applied to non-int");
-      }
-
-    int div = ee1->value / ee2->value;
-    int mod = ee1->value % ee2->value;
-    
-    delete ee1;
-    delete ee2;
-    
-    return new Pair(new Int(div), new Int(mod));
+    // Programa aquí cómo se evalúa esta expresión y retorna un valor adecuado.
+    return nullptr;
   }
 
   string to_string() const override
@@ -725,22 +686,21 @@ struct Let : public Exp
   
   void destroy() override
   {
-    delete e;
-    delete body;
+    // Programa aquí la liberación de memoria de todos los hijos de this
   }
 
   Exp * clone() override
   {
-    return new Let(var, e->clone(), body->clone());
+    /* Programa aquí la creación de un nuevo objeto idéntico a this y retorna
+       un valor adecuado.
+    */
+    return nullptr;
   }
-
+  
   Exp * eval(Enviroment & env) override
   {
-    Exp * v = e->eval(env);
-
-    Enviroment new_env = env;
-    new_env.insert(make_tuple(var, v));
-    return body->eval(new_env);
+    // Programa aquí cómo se evalúa esta expresión y retorna un valor adecuado.
+    return nullptr;
   }
 
   string to_string() const override
@@ -758,7 +718,7 @@ struct IfGreater : public Exp
   Exp * e2;
   Exp * e3;
   Exp * e4;
-  
+
   IfGreater()
     : Exp(ExpType::IFGREATER), e1(nullptr), e2(nullptr), e3(nullptr), e4(nullptr)
   {
@@ -778,38 +738,21 @@ struct IfGreater : public Exp
   
   void destroy() override
   {
-    delete e1;
-    delete e2;
-    delete e3;
-    delete e4;
+    // Programa aquí la liberación de memoria de todos los hijos de this
   }
 
   Exp * clone() override
   {
-    return new IfGreater(e1->clone(), e2->clone(), e3->clone(), e4->clone());
+    /* Programa aquí la creación de un nuevo objeto idéntico a this y retorna
+       un valor adecuado.
+    */
+    return nullptr;
   }
-
+  
   Exp * eval(Enviroment & env) override
   {
-    Exp * ee1 = e1->eval(env);
-    Exp * ee2 = e2->eval(env);
-    Exp * res = nullptr;
-
-    if (ee1->get_type() != ExpType::INT or ee2->get_type() != ExpType::INT)
-      {
-	delete ee1;
-	delete ee2;
-	throw domain_error("ifgreater applied to non-int");
-      }
-
-    if (static_cast<Int *>(ee1)->value > static_cast<Int *>(ee2)->value)
-      res = e3->eval(env);
-    else
-      res = e4->eval(env);
-
-    delete ee1;
-    delete ee2;
-    return res;
+    // Programa aquí cómo se evalúa esta expresión y retorna un valor adecuado.
+    return nullptr;
   }
 
   string to_string() const override
@@ -832,7 +775,7 @@ struct Closure : public Exp
     // empty
   }
 
-  Closure(const Enviroment & e, Exp * f)
+  Closure(Enviroment & e, Exp * f)
     : Exp(ExpType::CLOSURE), env(e), fun(f)
   {
     // empty
@@ -845,17 +788,21 @@ struct Closure : public Exp
   
   void destroy() override
   {
-    delete fun;
+    // Programa aquí la liberación de memoria de todos los hijos de this
   }
-  
+
   Exp * clone() override
   {
-    return new Closure(env, fun->clone());
+    /* Programa aquí la creación de un nuevo objeto idéntico a this y retorna
+       un valor adecuado.
+    */
+    return nullptr;
   }
   
-  Exp * eval(Enviroment &) override
+  Exp * eval(Enviroment & env) override
   {
-    return clone();
+    // Programa aquí cómo se evalúa esta expresión y retorna un valor adecuado.
+    return nullptr;
   }
   
   string to_string() const override
@@ -889,19 +836,21 @@ struct Fun : public Exp
 
   void destroy() override
   {
-    delete body;
+    // Programa aquí la liberación de memoria de todos los hijos de this
   }
-  
+
   Exp * clone() override
   {
-    return new Fun(name, formal, body->clone());
+    /* Programa aquí la creación de un nuevo objeto idéntico a this y retorna
+       un valor adecuado.
+    */
+    return nullptr;
   }
   
   Exp * eval(Enviroment & env) override
   {
-    Closure * c = new Closure(env, clone());
-    env.insert(make_tuple(name, c));
-    return new Void();
+    // Programa aquí cómo se evalúa esta expresión y retorna un valor adecuado.
+    return nullptr;
   }
   
   string to_string() const override
@@ -936,40 +885,21 @@ struct Call : public Exp
   
   void destroy() override
   {
-    delete actual;
+    // Programa aquí la liberación de memoria de todos los hijos de this
   }
-  
+
   Exp * clone() override
   {
-    return new Call(fname, actual->clone());
+    /* Programa aquí la creación de un nuevo objeto idéntico a this y retorna
+       un valor adecuado.
+    */
+    return nullptr;
   }
   
   Exp * eval(Enviroment & env) override
   {
-    Exp * c = envlookup(env, fname);
-
-    if (c == nullptr)
-      throw domain_error("function name does not exist");
-
-    if (c->get_type() != ExpType::CLOSURE)
-      {
-	delete c;
-	throw domain_error("call applied to non-closure");
-      }
-
-    Closure * closure = static_cast<Closure *>(c);
-
-    Enviroment new_env = closure->env;
-    Fun * fun = static_cast<Fun *>(closure->fun);
-
-    new_env.insert(make_tuple(fun->name, c->clone()));
-    new_env.insert(make_tuple(fun->formal, actual->eval(env)));
-
-    Exp * ret = fun->body->eval(new_env);
-
-    delete c;
-
-    return ret;
+    // Programa aquí cómo se evalúa esta expresión y retorna un valor adecuado.
+    return nullptr;
   }
   
   string to_string() const override
@@ -980,541 +910,10 @@ struct Call : public Exp
   }
 };  
 
-Exp * parse(const string & p, int & pos)
-{
-  if (pos >= p.size())
-    return nullptr;
-
-  if (p[pos] != '<')
-    return nullptr;
-
-  if (p.substr(pos + 1, 4) == "void") 
-    {
-      pos += 6; 
-      return new Void();
-    }
-  else
-    {
-      size_t end_name = p.find_first_of(',', pos);
-      
-      // Extraigo nombre de la exprsión
-      string name = p.substr(pos + 1, end_name - pos - 1);
-      
-      pos = end_name + 1;
-      
-      if (name == "int") // Es una expresión entera
-	{
-	  Int * ret = new Int();
-	  
-	  // extraigo el valor entero
-	  size_t end_val = p.find_first_of('>', end_name);
-
-	  if (p[end_val] != '>')
-	    {
-	      delete ret;
-	      return nullptr;
-	    }
-
-	  string val = p.substr(end_name + 1, end_val - end_name - 1);
-
-	  if (not is_str_num(val))
-	    {
-	      delete ret;
-	      return nullptr;
-	    }
-
-	  ret->value = stoi(val);
-
-	  pos = end_val + 1;
-
-	  return ret;
-	}
-      else if (name == "pair")
-	{
-	  Pair * ret = new Pair();
-
-	  ret->e1 = parse(p, pos);
-
-	  if (ret->e1 == nullptr)
-	    {
-	      delete ret;
-	      return nullptr;
-	    }
-
-	  if (p[pos] != ',')
-	    {
-	      delete ret;
-	      return nullptr;
-	    }
-
-	  ++pos;
-      
-	  ret->e2 = parse(p, pos);
-
-	  if (ret->e2 == nullptr)
-	    {
-	      delete ret;
-	      return nullptr;
-	    }
-
-	  if (p[pos] != '>')
-	    {
-	      delete ret;
-	      return nullptr;
-	    }
-
-	  ++pos;
-      
-	  return ret;
-	}
-      else if (name == "fst")
-	{
-	  Fst * ret = new Fst();
-	  ret->e = parse(p, pos);
-
-	  if (ret->e == nullptr)
-	    return nullptr;
-
-	  if (p[pos] != '>')
-	    {
-	      delete ret;
-	      return nullptr;
-	    }
-      
-	  ++pos;
-	  return ret;
-	}
-      else if (name == "snd")
-	{
-	  Snd * ret = new Snd();
-	  ret->e = parse(p, pos);
-
-	  if (ret->e == nullptr)
-	    return nullptr;
-
-	  if (p[pos] != '>')
-	    {
-	      delete ret;
-	      return nullptr;
-	    }
-      
-	  ++pos;
-	  return ret;
-	}
-      else if (name == "def")
-	{
-	  Def * ret = new Def();
-
-	  size_t end_val = p.find_first_of(',', end_name + 1);
-	  
-	  if (p[end_val] != ',')
-	    {
-	      delete ret;
-	      return nullptr;
-	    }
-
-	  ret->var_name = p.substr(end_name + 1, end_val - end_name - 1);
-	  pos = end_val + 1;
-
-	  ret->e = parse(p, pos);
-
-	  if (ret->e == nullptr)
-	    {
-	      delete ret;
-	      return nullptr;
-	    }
-	  
-	  if (p[pos] != '>')
-	    {
-	      
-	      delete ret;
-	      return nullptr;
-	    }
-
-	  ++pos;
-	  
-	  return ret;
-	}
-      else if (name == "var")
-	{
-	  Var * ret = new Var();
-      
-	  // extraigo el nombre de la variable
-	  size_t end_val = p.find_first_of('>', end_name);
-
-	  if (p[end_val] != '>')
-	    {
-	      delete ret;
-	      return nullptr;
-	    }
-      
-	  ret->var_name = p.substr(end_name + 1, end_val - end_name - 1);
-	  pos = end_val + 1;
-      
-	  return ret;
-	}
-      else if (name == "isvoid")
-	{
-	  IsVoid * ret = new IsVoid();
-	  ret->e = parse(p, pos);
-
-	  if (ret->e == nullptr)
-	    return nullptr;
-
-	  if (p[pos] != '>')
-	    {
-	      delete ret;
-	      return nullptr;
-	    }
-      
-	  ++pos;
-	  return ret;
-	}
-      else if (name == "neg")
-	{
-	  Neg * ret = new Neg();
-	  ret->e = parse(p, pos);
-
-	  if (ret->e == nullptr)
-	    return nullptr;
-
-	  if (p[pos] != '>')
-	    {
-	      delete ret;
-	      return nullptr;
-	    }
-      
-	  ++pos;
-	  return ret;
-	}
-      else if (name == "add")
-	{
-	  Add * ret = new Add();
-
-	  ret->e1 = parse(p, pos);
-
-	  if (ret->e1 == nullptr)
-	    {
-	      delete ret;
-	      return nullptr;
-	    }
-
-	  if (p[pos] != ',')
-	    {
-	      delete ret;
-	      return nullptr;
-	    }
-
-	  ++pos;
-      
-	  ret->e2 = parse(p, pos);
-
-	  if (ret->e2 == nullptr)
-	    {
-	      delete ret;
-	      return nullptr;
-	    }
-
-	  if (p[pos] != '>')
-	    {
-	      delete ret;
-	      return nullptr;
-	    }
-      
-	  ++pos;
-
-	  return ret;
-	}
-      else if (name == "mul")
-	{
-	  Mul * ret = new Mul();
-
-	  ret->e1 = parse(p, pos);
-
-	  if (ret->e1 == nullptr)
-	    {
-	      delete ret;
-	      return nullptr;
-	    }
-
-	  if (p[pos] != ',')
-	    {
-	      delete ret;
-	      return nullptr;
-	    }
-
-	  ++pos;
-      
-	  ret->e2 = parse(p, pos);
-
-	  if (ret->e2 == nullptr)
-	    {
-	      delete ret;
-	      return nullptr;
-	    }
-
-	  if (p[pos] != '>')
-	    {
-	      delete ret;
-	      return nullptr;
-	    }
-      
-	  ++pos;
-
-	  return ret;
-	}
-      else if (name == "divmod")
-	{
-	  DivMod * ret = new DivMod();
-
-	  ret->e1 = parse(p, pos);
-
-	  if (ret->e1 == nullptr)
-	    {
-	      delete ret;
-	      return nullptr;
-	    }
-	
-	  if (p[pos] != ',')
-	    {
-	      delete ret;
-	      return nullptr;
-	    }
-
-	  ++pos;
-      
-	  ret->e2 = parse(p, pos);
-
-	  if (ret->e2 == nullptr)
-	    {
-	      delete ret;
-	      return nullptr;
-	    }
-
-	  if (p[pos] != '>')
-	    {
-	      delete ret;
-	      return nullptr;
-	    }
-      
-	  ++pos;
-
-	  return ret;
-	}
-      else if (name == "let")
-	{
-	  Let * ret = new Let();
-      
-	  // extraigo el nombre de la variable
-	  size_t end_var = p.find_first_of(',', end_name + 1);
-
-	  if (p[end_var] != ',')
-	    {
-	      delete ret;
-	      return nullptr;
-	    }
-
-	  ret->var = p.substr(end_name + 1, end_var - end_name - 1);
-
-	  pos = end_var + 1;
-
-	  ret->e = parse(p, pos);
-
-	  if (ret->e == nullptr)
-	    {
-	      delete ret;
-	      return nullptr;
-	    }
-
-	  if (p[pos] != ',')
-	    {
-	      delete ret;
-	      return nullptr;
-	    }
-
-	  ++pos;
-      
-	  ret->body = parse(p, pos);
-
-	  if (ret->body == nullptr)
-	    {
-	      delete ret;
-	      return nullptr;
-	    }
-
-	  if (p[pos] != '>')
-	    {
-	      delete ret;
-	      return nullptr;
-	    }
-      
-	  ++pos;
-      
-	  return ret;
-	}
-      else if (name == "ifgreater")
-	{
-	  IfGreater * ret = new IfGreater();
-
-	  ret->e1 = parse(p, pos);
-
-	  if (ret->e1 == nullptr)
-	    {
-	      delete ret;
-	      return nullptr;
-	    }
-
-	  if (p[pos] != ',')
-	    {
-	      delete ret;
-	      return nullptr;
-	    }
-
-	  ++pos;
-      
-	  ret->e2 = parse(p, pos);
-
-	  if (ret->e2 == nullptr)
-	    {
-	      delete ret;
-	      return nullptr;
-	    }
-
-	  if (p[pos] != ',')
-	    {
-	      delete ret;
-	      return nullptr;
-	    }
-
-	  ++pos;
-      
-	  ret->e3 = parse(p, pos);
-
-	  if (ret->e3 == nullptr)
-	    {
-	      cout << "null\n";
-	      delete ret;
-	      return nullptr;
-	    }
-
-	  if (p[pos] != ',')
-	    {
-	      cout << "coma\n";
-	      delete ret;
-	      return nullptr;
-	    }
-
-	  ++pos;
-      
-	  ret->e4 = parse(p, pos);
-
-	  if (ret->e4 == nullptr)
-	    {
-	      delete ret;
-	      return nullptr;
-	    }
-
-	  if (p[pos] != '>')
-	    {
-	      delete ret;
-	      return nullptr;
-	    }
-      
-	  ++pos;
-
-	  return ret;
-	}
-      else if (name == "fun")
-	{
-	  Fun * ret = new Fun();
-
-	  size_t end_fname = p.find_first_of(',', end_name + 1);
-	  
-	  if (p[end_fname] != ',')
-	    {
-	      delete ret;
-	      return nullptr;
-	    }
-
-	  ret->name = p.substr(end_name + 1, end_fname - end_name - 1);
-
-	  size_t end_val = p.find_first_of(',', end_fname + 1);
-
-	  if (p[end_val] != ',')
-	    {
-	      delete ret;
-	      return nullptr;
-	    }
-	  
-	  ret->formal = p.substr(end_fname + 1, end_val - end_fname - 1);
-	  
-	  pos = end_val + 1;
-
-	  ret->body = parse(p, pos);
-
-	  if (ret->body == nullptr)
-	    {
-	      delete ret;
-	      return nullptr;
-	    }
-	  
-	  if (p[pos] != '>')
-	    {
-	      delete ret;
-	      return nullptr;
-	    }
-
-	  ++pos;
-	  
-	  return ret;
-	}
-      else if (name == "call")
-	{
-	  Call * ret = new Call();
-
-	  size_t end_val = p.find_first_of(',', end_name + 1);
-	  
-	  if (p[end_val] != ',')
-	    {
-	      delete ret;
-	      return nullptr;
-	    }
-
-	  ret->fname = p.substr(end_name + 1, end_val - end_name - 1);
-	  pos = end_val + 1;
-
-	  ret->actual = parse(p, pos);
-
-	  if (ret->actual == nullptr)
-	    {
-	      delete ret;
-	      return nullptr;
-	    }
-	  
-	  if (p[pos] != '>')
-	    {
-	      delete ret;
-	      return nullptr;
-	    }
-
-	  ++pos;
-	  
-	  return ret;
-	}
-    }
-  return nullptr;
-}
-
 Exp * parse(const string & prog)
 {
-  if (prog.empty())
-    return nullptr;
-  
-  int p = 0;
-  Exp * ret = parse(remove_whites(prog), p);
-
-  if (ret == nullptr)
-    throw logic_error("bad formed expression");
-
-  return ret;
+  /* Programa aquí tu rutina para convertir la cadena de un programa en 
+     un árbol de expresiones en la cual retornes la raíz.
+  */
+  return nullptr;
 }
